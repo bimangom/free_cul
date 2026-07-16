@@ -1,0 +1,12 @@
+# Ignore local python virtual environments and cache
+.venv/
+__pycache__/
+
+# Ignore raw massive data sources (to stay under GitHub file size limits)
+data_1.csv
+data_2.csv
+data_3.csv
+
+# Ignore logs and temp files
+*.log
+.gemini/

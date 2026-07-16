@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕵️‍♂️ 수도권 무료 문화생활 사냥꾼 - 기밀 GIS 및 대형 캘린더 대시보드</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet.js (GIS Map API, Zero API Keys, Premium look) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- PapaParse (Superb CSV Parser CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Cyberpunk grid overlay -->
+    <div class="grid-background"></div>
+    <div class="glow-orb" id="orb-1"></div>
+    <div class="glow-orb" id="orb-2"></div>
+
+    <div class="app-container">
+        <!-- Main Header -->
+        <header class="main-header">
+            <div class="logo-area">
+                <div class="spy-icon-container">
+                    <svg class="spy-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 4C14.07 4 15.93 4.83 17.31 6.18L6.18 17.31C4.83 15.93 4 14.07 4 12C4 7.58 7.58 4 12 4ZM12 20C9.93 20 8.07 19.17 6.69 17.82L17.82 6.69C19.17 8.07 20 9.93 20 12C20 16.42 17.58 20 12 20Z" fill="var(--color-primary)"/>
+                        <path d="M12 8V12L15 14" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>수도권 무료 문화생활 사냥꾼</h1>
+                    <p class="subtitle">Seoul Metropolitan Area Free Culture Life Hunter <span class="version-tag">GIS v2.5</span></p>
+                </div>
+            </div>
+            <div class="security-status">
+                <span class="status-dot pulsing"></span>
+                <span class="status-text">AGENT ONLINE (ENCRYPTED)</span>
+            </div>
+        </header>
+
+        <!-- 🕵️‍♂️ Secretive Agent Message Banner (Classified Dossier Style with Tape and Stamp) -->
+        <section class="agent-whisper-banner">
+            <div class="agent-avatar-container">
+                <div class="radar-scan-line"></div>
+                <img src="hunter_spy_avatar.png" alt="수도권 무료 문화생활 사냥꾼" class="agent-avatar-img">
+                <span class="agent-badge-tag">CHIEF HUNTER</span>
+            </div>
+            <div class="whisper-dossier-paper">
+                <div class="tape-corner tape-left"></div>
+                <div class="tape-corner tape-right"></div>
+                <div class="whisper-header">
+                    <span class="agent-name">📠 사냥꾼의 귓속말 (Chief's Wiretap Dispatch)</span>
+                    <div class="dossier-stamps">
+                        <span class="dossier-stamp stamp-confidential">CLASSIFIED</span>
+                        <span class="dossier-stamp stamp-urgent">TOP SECRET</span>
+                    </div>
+                </div>
+                <p id="whisper-text" class="whisper-content">쉿! 조용히 해... 수도권(서울/경기/인천) 전용 문화 관측위성이 전면 재조정되었어. 이제 404 에러로 삐걱거리던 가짜 주소들을 모두 정비하고, 현장과 다이렉트로 통신하는 100% 실시간 작전망을 가동한다. 아래 암호 해독 검색창과 대형 캘린더, 실시간 첩보 위성을 활용해서 너만 조용히 선착순 슬롯을 가로채도록... 외부 유출 시 즉각 레이더는 폭파된다.</p>
+            </div>
+        </section>
+
+        <!-- Main Body Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Side Column: Status / Simulator / Controls -->
+            <aside class="left-column">
+                <!-- Panel 1: Terminal Simulator -->
+                <section class="dashboard-panel terminal-panel">
+                    <div class="panel-header">
+                        <div class="terminal-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <h3>AGENT SCAN SIMULATOR</h3>
+                        <span class="terminal-badge">STETH-MODE</span>
+                    </div>
+                    <div class="terminal-body" id="terminal-body">
+                        <div class="terminal-line system-msg">[SYSTEM] 수도권 무료 문화생활 사냥꾼 연동 완료.</div>
+                        <div class="terminal-line system-msg">[SYSTEM] 크롤러 모듈 `crawler.py` 가동 가능.</div>
+                        <div class="terminal-line command-line">> python agent.py --scan-future</div>
+                        <div class="terminal-line log-line">[INFO] 오늘 날짜(2026-07-16) 감지. 과거 행사 완전 필터링 가동.</div>
+                        <div class="terminal-line log-line">[INFO] 도구 `CULTURE_TARGETS` 연동 및 14대 핵심 기관 탐색...</div>
+                        <div class="terminal-line success-line">[OK] 총 14개의 미래 진행 타겟 수집 성공.</div>
+                        <div class="terminal-line log-line">[INFO] 가성비 필터링 가동 (무료 및 1만원 이하 판별 완료)</div>
+                        <div class="terminal-line success-line">[OK] Leaflet GIS 지도 좌표 연동 및 달력 구성 완료.</div>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-secondary" id="btn-run-scan">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><polyline points="23 4 23 10 19 10"></polyline><polyline points="1 20 1 14 5 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            실시간 GPS 재스캔
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Panel 2: Target Facility Scope Stats -->
+                <section class="dashboard-panel stats-panel">
+                    <div class="panel-header">
+                        <h3>TARGET SCOPE</h3>
+                    </div>
+                    <div class="stats-body">
+                        <div class="stat-row">
+                            <span class="stat-label">서울권 허브/구청/서점</span>
+                            <span class="stat-value text-glowing">8 Targets</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">경기도 공립센터/별마당</span>
+                            <span class="stat-value text-glowing">3 Targets</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">인천 개항장/도서관/구청</span>
+                            <span class="stat-value text-glowing">3 Targets</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-total">
+                            <span>사냥 가능한 미래 타겟</span>
+                            <span class="total-count">14 건</span>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Right Side Column: Map, Calendar and List (Main Board) -->
+            <main class="right-column">
+                
+                <!-- GIS Interactive Map Panel -->
+                <section class="dashboard-panel map-panel">
+                    <div class="panel-header">
+                        <div class="header-main">
+                            <h3>🗺️ 수도권 기밀 문화지도 (Interactive GIS Map)</h3>
+                            <p class="panel-desc">수도권 전역의 핀을 누르면 상세 정보를 팝업하고, 리스트를 누르면 지도가 해당 지역으로 비행(Fly-to)합니다.</p>
+                        </div>
+                        <div class="map-status">
+                            <span class="map-dot"></span>
+                            <span>LEAFLET LIVE</span>
+                        </div>
+                    </div>
+                    <div class="map-wrapper">
+                        <div id="map-canvas"></div>
+                    </div>
+                </section>
+
+                <!-- Monthly Large Calendar Panel -->
+                <section class="dashboard-panel large-calendar-panel">
+                    <div class="panel-header">
+                        <div class="header-main">
+                            <h3>📅 <span id="calendar-month-title">2026년 7월</span> 기밀 작전 스케줄 (Large Monthly Calendar)</h3>
+                            <p class="panel-desc">날짜별 사냥 일정을 추적하고 일정이 적힌 주황색 배지를 클릭하면 상세 카드로 즉시 워프합니다.</p>
+                        </div>
+                        <div class="calendar-controls">
+                            <div class="month-selector-container">
+                                <label for="month-select" class="selector-label">작전 월:</label>
+                                <select id="month-select" class="spy-dropdown">
+                                    <option value="7" selected>7월</option>
+                                    <option value="8">8월</option>
+                                    <option value="9">9월</option>
+                                    <option value="10">10월</option>
+                                    <option value="11">11월</option>
+                                    <option value="12">12월</option>
+                                </select>
+                            </div>
+                            <div class="calendar-indicator">
+                                <span class="ind free-ind">● 무료</span>
+                                <span class="ind budget-ind">● 가성비</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-wrapper">
+                        <!-- Calendar grid template headers -->
+                        <div class="calendar-days-header">
+                            <div class="day-head sun">일</div>
+                            <div class="day-head">월</div>
+                            <div class="day-head">화</div>
+                            <div class="day-head">수</div>
+                            <div class="day-head">목</div>
+                            <div class="day-head">금</div>
+                            <div class="day-head sat">토</div>
+                        </div>
+                        <!-- Grid cells generated dynamically -->
+                        <div class="calendar-grid" id="large-calendar-grid"></div>
+                    </div>
+                </section>
+
+                <!-- Event Cards Timeline/Feed Panel -->
+                <section class="dashboard-panel content-panel">
+                    <div class="panel-header">
+                        <div class="header-main">
+                            <h3>📋 미래 활성 타겟 상세 리포트 (Target Report Feed)</h3>
+                            <p class="panel-desc">정확한 원문 링크 및 구글 캘린더 등록 기능이 완벽하게 동기화된 가성비 리스트</p>
+                        </div>
+                    </div>
+
+                    <!-- 🕵️‍♂️ 실시간 기밀 암호검색창 (Direct Spy Search Box) -->
+                    <div class="spy-search-container">
+                        <span class="spy-search-icon">🔍</span>
+                        <input type="text" id="spy-search-input" class="spy-search-input" placeholder="자연어로 은밀하게 검색해 보십시오 (예: '서울 무료 음악회', '강남구 영화', '1만원 이하 체험')... (실시간 동적 추적)">
+                        <button id="spy-search-clear-btn" class="spy-search-clear-btn" style="display: none;">×</button>
+                    </div>
+
+                    <!-- 🕵️‍♂️ 사냥 타겟 정밀 필터링 보드 (Region, Category, Fee Filter Board) -->
+                    <div class="filter-board">
+                        <!-- 작전 지역 필터 -->
+                        <div class="filter-group">
+                            <span class="filter-group-label"><span class="icon">📍</span>작전 지역:</span>
+                            <div class="filter-pills" id="region-filter-group">
+                                <button class="filter-pill active" data-region="all">전체 지역 <span class="pill-badge badge-region-all">0</span></button>
+                                <button class="filter-pill" data-region="서울">서울 <span class="pill-badge badge-region-seoul">0</span></button>
+                                <button class="filter-pill" data-region="경기">경기 <span class="pill-badge badge-region-gyeonggi">0</span></button>
+                                <button class="filter-pill" data-region="인천">인천 <span class="pill-badge badge-region-incheon">0</span></button>
+                            </div>
+                        </div>
+                        
+                        <!-- 타겟 종류 필터 -->
+                        <div class="filter-group">
+                            <span class="filter-group-label"><span class="icon">🏷️</span>타겟 종류:</span>
+                            <div class="filter-pills" id="category-filter-group">
+                                <button class="filter-pill active" data-category="all">전체 종류 <span class="pill-badge badge-category-all">0</span></button>
+                                <button class="filter-pill" data-category="공연">공연 <span class="pill-badge badge-category-show">0</span></button>
+                                <button class="filter-pill" data-category="전시">전시 <span class="pill-badge badge-category-exhibit">0</span></button>
+                                <button class="filter-pill" data-category="영화">영화 <span class="pill-badge badge-category-movie">0</span></button>
+                                <button class="filter-pill" data-category="도서관">도서관 <span class="pill-badge badge-category-library">0</span></button>
+                                <button class="filter-pill" data-category="강연">강연 <span class="pill-badge badge-category-lecture">0</span></button>
+                                <button class="filter-pill" data-category="체험">체험 <span class="pill-badge badge-category-exp">0</span></button>
+                            </div>
+                        </div>
+                        
+                        <!-- 침투 요금 필터 -->
+                        <div class="filter-group">
+                            <span class="filter-group-label"><span class="icon">💸</span>침투 요금:</span>
+                            <div class="filter-pills" id="fee-filter-group">
+                                <button class="filter-pill active" data-fee="all">전체 요금 <span class="pill-badge badge-fee-all">0</span></button>
+                                <button class="filter-pill" data-fee="free">🎁 완전 무료 <span class="pill-badge badge-fee-free">0</span></button>
+                                <button class="filter-pill" data-fee="budget">💸 1만원 이하 <span class="pill-badge badge-fee-budget">0</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Target Feed Cards -->
+                    <div class="events-timeline" id="events-timeline">
+                        <!-- Filled Dynamically -->
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>본 정보는 읽는 즉시 구글 캘린더에 기밀 등록하시고 남들에게 발설하지 마십시오. &copy; 2026 수도권 무료 문화생활 사냥꾼 AI.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
